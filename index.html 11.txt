@@ -50,6 +50,9 @@
       margin-bottom: 2rem;
       box-shadow: 0 0 15px rgba(0,0,0,0.05);
     }
+    .product h3, .shop h3 {
+      color: #004080;
+    }
     .shop-item {
       display: flex;
       justify-content: space-between;
@@ -69,12 +72,6 @@
       padding: 0.5rem 1rem;
       border-radius: 0.5rem;
       cursor: pointer;
-    }
-    .shop-item input[type="number"] {
-      width: 60px;
-      padding: 0.25rem;
-      margin-top: 0.5rem;
-      font-size: 1rem;
     }
     .cart {
       border-top: 1px solid #ccc;
@@ -127,41 +124,29 @@
 
     <div class="shop">
       <h3>Магазин</h3>
-
       <div class="shop-item">
         <div>
           <strong>Кафе T&J – 1 кг</strong><br>
-          <span>Цена: 25 лв</span><br>
-          <label>Количество:
-            <input type="number" id="qty-1kg" value="1" min="1">
-          </label>
+          <span>Цена: 25 лв</span>
         </div>
         <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=120&q=80" alt="Кафе T&J">
-        <button onclick="addToCart('Кафе T&J – 1 кг', 25, 'qty-1kg')">Добави</button>
+        <button onclick="addToCart('Кафе T&J – 1 кг', 25)">Добави</button>
       </div>
-
       <div class="shop-item">
         <div>
           <strong>Кафе T&J – 500 г</strong><br>
-          <span>Цена: 14 лв</span><br>
-          <label>Количество:
-            <input type="number" id="qty-500g" value="1" min="1">
-          </label>
+          <span>Цена: 14 лв</span>
         </div>
         <img src="https://images.unsplash.com/photo-1536520002442-39764a41e30d?auto=format&fit=crop&w=120&q=80" alt="Кафе T&J 500g">
-        <button onclick="addToCart('Кафе T&J – 500 г', 14, 'qty-500g')">Добави</button>
+        <button onclick="addToCart('Кафе T&J – 500 г', 14)">Добави</button>
       </div>
-
       <div class="shop-item">
         <div>
           <strong>T&J Medium Roast – 1 кг</strong><br>
-          <span>Цена: 28 лв</span><br>
-          <label>Количество:
-            <input type="number" id="qty-medium" value="1" min="1">
-          </label>
+          <span>Цена: 28 лв</span>
         </div>
-        <img src="https://images.unsplash.com/photo-1510626176961-4bfb7e17d83b?auto=format&fit=crop&w=120&q=80" alt="T&J Medium Roast">
-        <button onclick="addToCart('T&J Medium Roast – 1 кг', 28, 'qty-medium')">Добави</button>
+        <img src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-5ef0-61f7-8bcd-26aa6984f313/raw?se=2025-05-23T07%3A12%3A09Z&sp=r&sv=2024-08-04&sr=b&scid=fc19a8c7-55e6-5f89-8118-0c1fcfe0de50&skoid=0a4a0f0c-99ac-4752-9d87-cfac036fa93f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-23T06%3A02%3A34Z&ske=2025-05-24T06%3A02%3A34Z&sks=b&skv=2024-08-04&sig=yXkoomn3WAC4kr%2BVd8KYJXzQ/DoN8alAqCSySlgRq%2Bo%3D" alt="T&J Medium Roast">
+        <button onclick="addToCart('T&J Medium Roast – 1 кг', 28)">Добави</button>
       </div>
 
       <div class="cart" id="cart">
@@ -190,11 +175,8 @@
     const cartTotal = document.getElementById('cart-total');
     let cart = [];
 
-    function addToCart(product, price, qtyInputId) {
-      const qty = parseInt(document.getElementById(qtyInputId).value);
-      if (!qty || qty < 1) return;
-
-      cart.push({ product, price, qty });
+    function addToCart(product, price) {
+      cart.push({ product, price });
       renderCart();
     }
 
@@ -202,11 +184,10 @@
       cartItems.innerHTML = '';
       let total = 0;
       cart.forEach((item, index) => {
-        const itemTotal = item.price * item.qty;
-        total += itemTotal;
+        total += item.price;
         const div = document.createElement('div');
         div.className = 'cart-item';
-        div.innerHTML = `${item.product} — ${item.qty} бр. — ${itemTotal} лв <button onclick="removeItem(${index})">✖</button>`;
+        div.innerHTML = `${item.product} - ${item.price} лв <button onclick="removeItem(${index})">✖</button>`;
         cartItems.appendChild(div);
       });
       cartTotal.innerText = total;
