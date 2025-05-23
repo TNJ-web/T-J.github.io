@@ -43,14 +43,14 @@
       max-width: 1000px;
       margin: auto;
     }
-    .product, .shop, .contact-form {
+    .product, .shop, .contact-form, .shipping {
       background: #f9f9f9;
       border-radius: 1rem;
       padding: 2rem;
       margin-bottom: 2rem;
       box-shadow: 0 0 15px rgba(0,0,0,0.05);
     }
-    .product h3, .shop h3 {
+    .product h3, .shop h3, .shipping h3 {
       color: #004080;
     }
     .shop-item {
@@ -83,19 +83,15 @@
       justify-content: space-between;
       padding: 0.5rem 0;
     }
-    .contact-form input,
-    .contact-form textarea,
-    select {
+    input, textarea, select {
       width: 100%;
       padding: 0.75rem;
       margin: 0.5rem 0;
       border: none;
       border-radius: 0.5rem;
       font-size: 1rem;
-      color: #000;
-      background-color: #fff;
     }
-    .contact-form button {
+    .contact-form button, .shipping button {
       background: #ffcc00;
       border: none;
       padding: 0.75rem 1.5rem;
@@ -125,104 +121,51 @@
     <div class="shop">
       <h3>Магазин</h3>
       <div class="shop-item">
+        <img src="/mnt/data/d45ccb60-8a48-4a09-bd6a-819d82af5249.png" alt="T&J Coffee 1kg">
         <div>
-          <strong>Кафе T&J – 1 кг</strong><br>
-          <span>Цена: 25 лв</span>
+          <p><strong>T&J Кафе 1 кг</strong><br>60% арабика / 40% робуста<br>Medium roast - Chocolate, Cherry & Roasted Almond</p>
+          <p><strong>Цена: 28 лв</strong></p>
         </div>
-        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=120&q=80" alt="Кафе T&J">
-        <button onclick="addToCart('Кафе T&J – 1 кг', 25)">Добави</button>
+        <button>Купи</button>
       </div>
-      <div class="shop-item">
-        <div>
-          <strong>Кафе T&J – 500 г</strong><br>
-          <span>Цена: 14 лв</span>
-        </div>
-        <img src="https://images.unsplash.com/photo-1536520002442-39764a41e30d?auto=format&fit=crop&w=120&q=80" alt="Кафе T&J 500g">
-        <button onclick="addToCart('Кафе T&J – 500 г', 14)">Добави</button>
-      </div>
-      <div class="shop-item">
-        <div>
-          <strong>T&J Medium Roast – 1 кг</strong><br>
-          <span>Цена: 28 лв</span>
-        </div>
-        <img src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-5ef0-61f7-8bcd-26aa6984f313/raw?se=2025-05-23T07%3A12%3A09Z&sp=r&sv=2024-08-04&sr=b&scid=fc19a8c7-55e6-5f89-8118-0c1fcfe0de50&skoid=0a4a0f0c-99ac-4752-9d87-cfac036fa93f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-23T06%3A02%3A34Z&ske=2025-05-24T06%3A02%3A34Z&sks=b&skv=2024-08-04&sig=yXkoomn3WAC4kr%2BVd8KYJXzQ/DoN8alAqCSySlgRq%2Bo%3D" alt="T&J Medium Roast">
-        <button onclick="addToCart('T&J Medium Roast – 1 кг', 28)">Добави</button>
-      </div>
+    </div>
 
-      <div class="cart" id="cart">
-        <h3>Количка</h3>
-        <div id="cart-items"></div>
-        <p><strong>Общо:</strong> <span id="cart-total">0</span> лв</p>
-        <form id="checkoutForm">
-          <input type="text" name="name" placeholder="Име" required>
-          <input type="email" name="email" placeholder="Имейл" required>
-          <input type="text" name="phone" placeholder="Телефон" required>
-          <textarea name="address" placeholder="Адрес за доставка"></textarea>
-          <select name="payment" required>
-            <option value="">Избери начин на плащане</option>
-            <option value="cod">Наложен платеж</option>
-            <option value="card">Кредитна/Дебитна карта</option>
-          </select>
-          <button type="submit">Поръчай</button>
-        </form>
-        <p id="checkoutMessage"></p>
-      </div>
+    <div class="shipping">
+      <h3>Доставка чрез Спиди</h3>
+      <form id="shippingForm">
+        <label for="city">Град:</label>
+        <input type="text" id="city" name="city" placeholder="Въведете град" required>
+
+        <label for="office">Офис на Спиди:</label>
+        <select id="office" name="office" required>
+          <option value="">Изберете офис</option>
+        </select>
+
+        <button type="submit">Избери офис</button>
+      </form>
     </div>
   </section>
 
   <script>
-    const cartItems = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    let cart = [];
+    // Dummy data for Speedy offices
+    const offices = {
+      'София': ['София - Център', 'София - Люлин', 'София - Младост'],
+      'Пловдив': ['Пловдив - Център', 'Пловдив - Тракия'],
+      'Варна': ['Варна - Център', 'Варна - Владиславово']
+    };
 
-    function addToCart(product, price) {
-      cart.push({ product, price });
-      renderCart();
-    }
-
-    function renderCart() {
-      cartItems.innerHTML = '';
-      let total = 0;
-      cart.forEach((item, index) => {
-        total += item.price;
-        const div = document.createElement('div');
-        div.className = 'cart-item';
-        div.innerHTML = `${item.product} - ${item.price} лв <button onclick="removeItem(${index})">✖</button>`;
-        cartItems.appendChild(div);
-      });
-      cartTotal.innerText = total;
-    }
-
-    function removeItem(index) {
-      cart.splice(index, 1);
-      renderCart();
-    }
-
-    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      if (cart.length === 0) {
-        document.getElementById('checkoutMessage').innerText = 'Количката е празна.';
-        return;
+    document.getElementById('city').addEventListener('input', function () {
+      const city = this.value.trim();
+      const officeSelect = document.getElementById('office');
+      officeSelect.innerHTML = '<option value="">Изберете офис</option>';
+      if (offices[city]) {
+        offices[city].forEach(office => {
+          const option = document.createElement('option');
+          option.value = office;
+          option.textContent = office;
+          officeSelect.appendChild(option);
+        });
       }
-
-      const formData = new FormData(this);
-      formData.append('cart', JSON.stringify(cart));
-
-      fetch('https://formspree.io/f/mrbqvzzg', {
-        method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      })
-      .then(response => {
-        if (response.ok) {
-          document.getElementById('checkoutMessage').innerText = 'Поръчката е изпратена успешно!';
-          cart = [];
-          renderCart();
-          this.reset();
-        } else {
-          document.getElementById('checkoutMessage').innerText = 'Грешка при изпращане. Опитайте отново.';
-        }
-      });
     });
   </script>
 </body>
